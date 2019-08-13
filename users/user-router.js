@@ -73,4 +73,17 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.get('/:id/posts', async (req, res) => {
+  const {id} = req.params;
+  try {
+    const posts = await db('posts as p')
+    .join('users as u','u.id', 'p.user_id')
+    .select('p.id', 'u.username','p.contents')
+    .where({user_id:id});
+    res.status(200).json(posts);
+  } catch (err){
+    res.status(500).json({message: "Fail to get user post"})
+  }
+})
+
 module.exports = router;
